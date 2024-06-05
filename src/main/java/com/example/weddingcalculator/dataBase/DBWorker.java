@@ -36,23 +36,22 @@ public class DBWorker implements Repository {
             statement.execute("DROP TABLE 'specialists'");
             statement.execute("DROP TABLE 'photographer'");
             statement.execute("DROP TABLE 'eventHost'");
+            statement.execute("DROP TABLE 'visagist'");
+            statement.execute("DROP TABLE 'decorator'");
+            statement.execute("DROP TABLE 'restaurant'");
             statement.execute("CREATE TABLE if not exists 'specialists'('id' INTEGER PRIMARY KEY, 'type' text);");
             statement.execute("CREATE TABLE if not exists 'photographer'('id' INTEGER PRIMARY KEY, 'name' text,'surname' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
             statement.execute("CREATE TABLE if not exists 'eventHost'('id' INTEGER PRIMARY KEY, 'name' text,'surname' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
-            statement.execute("CREATE TABLE if not exists 'visagist'('id' INTEGER PRIMARY KEY, 'name' text,'location' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
-            statement.execute("CREATE TABLE if not exists 'decorator'('id' INTEGER PRIMARY KEY, 'name' text,'viewOfFlowers' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
-            statement.execute("CREATE TABLE if not exists 'restaurant'('id' INTEGER PRIMARY KEY, 'name' text,'location' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
+            statement.execute("CREATE TABLE if not exists 'visagist'('id' INTEGER PRIMARY KEY, 'name' text,'surname' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
+            statement.execute("CREATE TABLE if not exists 'decorator'('id' INTEGER PRIMARY KEY, 'name' text,'surname' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
+            statement.execute("CREATE TABLE if not exists 'restaurant'('id' INTEGER PRIMARY KEY, 'name' text,'surname' text,'price' float,'contacts' text,foreign key (id) references specialists(id));");
             System.out.println("Таблицы успешно созданы");
             statement.execute("INSERT INTO 'specialists'('id','type') VALUES (45,'Photographer')");
             statement.execute("INSERT INTO 'specialists'('id','type') VALUES (46,'Photographer')");
             statement.execute("INSERT INTO 'specialists'('id','type') VALUES (32,'EventHost')");
             statement.execute("INSERT INTO 'specialists'('id','type') VALUES (33,'EventHost')");
-
-            // Insert two rows into the 'photographer' table
             statement.execute("INSERT INTO 'photographer'('id','name', 'surname', 'price', 'contacts') VALUES (45,'John', 'Doe', 1000.0, 'johndoe@example.com')");
             statement.execute("INSERT INTO 'photographer'('id','name', 'surname', 'price', 'contacts') VALUES (46,'Jane', 'Smith', 1200.0, 'janesmith@example.com')");
-
-            // Insert two rows into the 'eventHost' table
             statement.execute("INSERT INTO 'eventHost'('id','name', 'surname', 'price', 'contacts') VALUES (32,'Alice', 'Cooper', 1500.0, 'alicecooper@example.com')");
             statement.execute("INSERT INTO 'eventHost'('id','name', 'surname', 'price', 'contacts') VALUES (33,'Bob', 'Marley', 1800.0, 'bobmarley@example.com')");
 
@@ -74,10 +73,14 @@ public class DBWorker implements Repository {
         String query = "SELECT specialists.type, specialists.id, \n" +
                 "photographer.id,photographer.name,photographer.surname,photographer.price,photographer.contacts, \n" +
                 "eventHost.id as idH,eventHost.name as nameH,eventHost.surname as surnameh,eventHost.price as priceH,eventHost.contacts as contactsh,\n" +
-                "visagist.id as idV,visagist.name as nameV,visagist.location as locationV,visagist.price as priceV,visagist.contacts as contactsV\n"+
+                "visagist.id as idV,visagist.name as nameV,visagist.surname as surnameV,visagist.price as priceV,visagist.contacts as contactsV,\n"+
+                "decorator.id as idD,decorator.name as nameD,decorator.surname as surnameD,decorator.price as priceD,decorator.contacts as contactsD,\n"+
+                "restaurant.id as idR,restaurant.name as nameR,restaurant.surname as surnameR,restaurant.price as priceR,restaurant.contacts as contactsR\n"+
                 "FROM specialists\n" +
                 "LEFT JOIN photographer ON photographer.id = specialists.id\n" +
+                "LEFT JOIN decorator ON decorator.id = specialists.id\n" +
                 "LEFT JOIN visagist ON visagist.id = specialists.id\n" +
+                "LEFT JOIN restaurant ON restaurant.id = specialists.id\n" +
                 "LEFT JOIN eventHost ON eventHost.id = specialists.id;";
 
         ResultSet resultSet = statement.executeQuery(query);
@@ -99,13 +102,27 @@ public class DBWorker implements Repository {
                             resultSet.getFloat("priceh"),
                             resultSet.getString("contactsh")));
                     break;
-                /*case "Visagiste":
+                case "Visagiste":
                     list.add(new Visagiste(resultSet.getInt("idV"),
                             resultSet.getString("nameV"),
-                            resultSet.getString("locationV"),
+                            resultSet.getString("surnameV"),
                             resultSet.getFloat("priceV"),
                             resultSet.getString("contactsV")));
-                    break;*/
+                    break;
+                case "Restaurant":
+                    list.add(new Restaurant(resultSet.getInt("idR"),
+                            resultSet.getString("nameR"),
+                            resultSet.getString("surnameR"),
+                            resultSet.getFloat("priceR"),
+                            resultSet.getString("contactsR")));
+                    break;
+                case "Decorator":
+                    list.add(new Decorator(resultSet.getInt("idD"),
+                            resultSet.getString("nameD"),
+                            resultSet.getString("surnameD"),
+                            resultSet.getFloat("priceD"),
+                            resultSet.getString("contactsD")));
+                    break;
             }
             i++;
         }
@@ -155,31 +172,31 @@ public class DBWorker implements Repository {
             // Вставка данных в соответствующую таблицу специалиста
             if (person instanceof Photographer) {
                 Photographer photographer = (Photographer) person;
-                statement.executeUpdate("INSERT INTO photographer (id, name, surname, price, contacts) VALUES (" + person.hashCode() + ", '" + photographer.getName() + "', '" + photographer.getSurname() + "', " + photographer.getPrice() + ", '" + photographer.getContacts() + "')");
-                statement.executeUpdate("insert into specialists values ("+person.hashCode()+", 'Photographer');");
+                statement.executeUpdate("INSERT INTO photographer (id, name, surname, price, contacts) VALUES (" + photographer.getId() + ", '" + photographer.getName() + "', '" + photographer.getSurname() + "', " + photographer.getPrice() + ", '" + photographer.getContacts() + "')");
+                statement.executeUpdate("insert into specialists values ("+photographer.getId()+", 'Photographer');");
                 System.out.println("Фотограф записан");
             } else if (person instanceof EventHost){
                 EventHost eventHost = (EventHost) person;
-                statement.executeUpdate("INSERT INTO eventhost (id, name, surname, price, contacts) VALUES (" + person.hashCode() + ", '" + eventHost.getName() + "', '" + eventHost.getSurname() + "', " + eventHost.getPrice() + ", '" + eventHost.getContacts() + "')");
-                statement.executeUpdate("insert into specialists values ("+person.hashCode()+", 'EventHost');");
+                statement.executeUpdate("INSERT INTO eventhost (id, name, surname, price, contacts) VALUES (" + eventHost.getId() + ", '" + eventHost.getName() + "', '" + eventHost.getSurname() + "', " + eventHost.getPrice() + ", '" + eventHost.getContacts() + "')");
+                statement.executeUpdate("insert into specialists values ("+eventHost.getId()+", 'EventHost');");
                 System.out.println("Ведущий записан");
             }
             else if (person instanceof Visagiste){
                 Visagiste visagiste = (Visagiste) person;
-                statement.executeUpdate("INSERT INTO visagist (id, name,location, price, contacts) VALUES (" + person.hashCode() + ", '" + visagiste.getName() + "', '" + visagiste.getLocation() + "', " + visagiste.getPrice() + ", '" + visagiste.getContacts() + "')");
-                statement.executeUpdate("insert into specialists values ("+person.hashCode()+", 'Visagiste');");
+                statement.executeUpdate("INSERT INTO visagist (id, name,surname, price, contacts) VALUES (" + visagiste.getId()+ ", '" + visagiste.getName() + "', '" + visagiste.getSurname() + "', " + visagiste.getPrice() + ", '" + visagiste.getContacts() + "')");
+                statement.executeUpdate("insert into specialists values ("+visagiste.getId()+", 'Visagiste');");
                 System.out.println("Визажист записан");
             }
             else if (person instanceof Decorator){
                 Decorator decorator = (Decorator) person;
-                statement.executeUpdate("INSERT INTO decorator (id, name, viewOfFlowers, price, contacts) VALUES (" + person.hashCode() + ", '" + decorator.getName() + "', '" + decorator.getViewOfFlowers() + "', " + decorator.getPrice() + ", '" + decorator.getContacts() + "')");
-                statement.executeUpdate("insert into specialists values ("+person.hashCode()+", 'Decorator');");
+                statement.executeUpdate("INSERT INTO decorator (id, name, surname, price, contacts) VALUES (" + decorator.getId() + ", '" + decorator.getName() + "', '" + decorator.getSurname() + "', " + decorator.getPrice() + ", '" + decorator.getContacts() + "')");
+                statement.executeUpdate("insert into specialists values ("+decorator.getId()+", 'Decorator');");
                 System.out.println("Декоратор записан");
             }
             else{
                 Restaurant restaurant = (Restaurant) person;
-                statement.executeUpdate("INSERT INTO restaurant (id, name, location, price, contacts) VALUES (" + person.hashCode() + ", '" + restaurant.getName() + "', '" + restaurant.getLocation() + "', " + restaurant.getPrice() + ", '" + restaurant.getContacts() + "')");
-                statement.executeUpdate("insert into specialists values ("+person.hashCode()+", 'Restaurant');");
+                statement.executeUpdate("INSERT INTO restaurant (id, name, surname, price, contacts) VALUES (" + restaurant.getId() + ", '" + restaurant.getName() + "', '" + restaurant.getSurname() + "', " + restaurant.getPrice() + ", '" + restaurant.getContacts() + "')");
+                statement.executeUpdate("insert into specialists values ("+restaurant.getId()+", 'Restaurant');");
                 System.out.println("Ресторан записан");
             }
 

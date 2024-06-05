@@ -1,6 +1,7 @@
 package com.example.weddingcalculator;
 
 import com.example.weddingcalculator.dataBase.DBWorker;
+import com.example.weddingcalculator.dataBase.Repository;
 import com.example.weddingcalculator.specialists.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,6 +19,12 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+    private Repository repository;
+    public Controller() {
+        this.repository = new DBWorker();
+    }
+    @FXML
+    private ComboBox<String> combox;
     @FXML
     public Button editButton;
     @FXML
@@ -36,12 +43,11 @@ public class Controller implements Initializable {
     public TableColumn<Person,String> contactsColumn;
     @FXML
     private Button removeButton;
-    DBWorker dbWorker=new DBWorker();
-    //WeddingAgency weddingAgency;
     AddWindow addWindow = new AddWindow();
     EditWindow editWindow=new EditWindow();
-    ObservableList<Person> data= FXCollections.observableArrayList();
-    ArrayList<Person> list;
+    public static ObservableList<Person> data;
+    ArrayList<Person> personList= new ArrayList<>();
+    ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан","Все");
     @FXML
     void initialize(){
         if (addWindow.isShowing()) {
@@ -54,10 +60,99 @@ public class Controller implements Initializable {
             }
         }
     }
+    @FXML
+    void Select(ActionEvent event) {
+        String selectedPerson = combox.getValue();
+        if (selectedPerson.equals("Все")){
+            try {
+                data.clear();
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof Photographer) {
+                        data.add((Photographer) person);
+                    } else if (person instanceof EventHost) {
+                        data.add((EventHost) person);
+                    }
+                    else if (person instanceof Visagiste) {
+                        data.add((Visagiste) person);
+                    }
+                    else if (person instanceof Decorator) {
+                        data.add((Decorator) person);
+                    }
+                    else{
+                        data.add((Restaurant) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (selectedPerson.equals("Фотограф")){
+            data.clear();
+            try {
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof Photographer) {
+                        data.add((Photographer) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (selectedPerson.equals("Ведущий")){
+            data.clear();
+            try {
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof EventHost) {
+                        data.add((EventHost) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (selectedPerson.equals("Визажист")){
+            data.clear();
+            try {
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof Visagiste) {
+                        data.add((Visagiste) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (selectedPerson.equals("Декоратор")){
+            data.clear();
+            try {
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof Decorator) {
+                        data.add((Decorator) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (selectedPerson.equals("Ресторан")){
+            data.clear();
+            try {
+                personList = repository.getAllPerson();
+                for (Person person : personList) {
+                    if (person instanceof Restaurant) {
+                        data.add((Restaurant) person);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
      @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            data=FXCollections.observableArrayList(personList);
             addInfAbout();
             //data=FXCollections.observableArrayList(list);
             //TableSpecialists.setItems(data);
@@ -65,30 +160,33 @@ public class Controller implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        //idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         contactsColumn.setCellValueFactory(new PropertyValueFactory<>("contacts"));
-        //data=FXCollections.observableArrayList(list);
         TableSpecialists.setItems(data);
+         combox.setItems(list);
 
     }
     private void addInfAbout() throws SQLException {
-        ArrayList<Person> personList = dbWorker.getAllPerson();
+        personList = repository.getAllPerson();
         for (Person person : personList) {
             if (person instanceof Photographer) {
                 data.add((Photographer) person);
-               // data= FXCollections.observableArrayList(person);
             } else if (person instanceof EventHost) {
                 data.add((EventHost) person);
-                //data= FXCollections.observableArrayList(person);
             }
             else if (person instanceof Visagiste) {
                 data.add((Visagiste) person);
-                //data= FXCollections.observableArrayList(person);
             }
-
+            else if (person instanceof Decorator) {
+                data.add((Decorator) person);
+            }
+            else{
+                data.add((Restaurant) person);
+            }
+            //data= FXCollections.observableArrayList(person);
         }
     }
     @FXML
@@ -100,8 +198,10 @@ public class Controller implements Initializable {
             return;
         }
         try {
-            dbWorker.removePerson(person);
+            repository.removePerson(person);
+            //personList.remove(person);
             data.remove(person);
+            TableSpecialists.getSelectionModel().clearSelection();
         } catch (Exception e) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "An error occurred while removing the person: " + e.getMessage(), ButtonType.OK);
             errorAlert.showAndWait();
@@ -119,5 +219,4 @@ public class Controller implements Initializable {
             }
         }
     }
-
 }

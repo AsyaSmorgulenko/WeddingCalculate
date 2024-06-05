@@ -1,5 +1,6 @@
 package com.example.weddingcalculator;
 
+import com.example.weddingcalculator.dataBase.Repository;
 import com.example.weddingcalculator.specialists.*;
 import com.example.weddingcalculator.dataBase.DBWorker;
 import javafx.collections.FXCollections;
@@ -9,17 +10,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
+import static com.example.weddingcalculator.Controller.*;
 
 public class AddWindow implements Initializable {
+    private Repository repository;
+    public AddWindow() {
+       this.repository = new DBWorker();
+    }
     public static Stage stage;
     @FXML
     private Button addButton;
@@ -29,9 +34,6 @@ public class AddWindow implements Initializable {
 
     @FXML
     private TextField contactsText;
-
-    @FXML
-    private TextField idText;
 
     @FXML
     private TextField informationText;
@@ -44,6 +46,7 @@ public class AddWindow implements Initializable {
     WeddingAgency weddingAgency;
     DBWorker dbWorker=new DBWorker();
     String selectedPerson;
+
     ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан");
     public static void openAddWindow() throws IOException {
         stage = new Stage();
@@ -80,62 +83,75 @@ public class AddWindow implements Initializable {
         String rezyltTextInformation = informationText.getText();
         String rezyltTextContacts = contactsText.getText();
         String rezyltTextPrice = priceText.getText();
-        String rezyltTextId = idText.getText();
-        if (selectedPerson.equals("Фотограф")) {
+        int Id = hashCode();
+        if (selectedPerson == null || selectedPerson.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Пожалуйста, выберите тип специалиста.", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+        else if (selectedPerson.equals("Фотограф")) {
             try {
-                Photographer photographer = new Photographer(Integer.parseInt(rezyltTextId),rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
-                //weddingAgency.add(photographer);
-                dbWorker.addPerson(photographer);
+                Photographer photographer = new Photographer(Id,rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
+                repository.addPerson(photographer);
+                data.add(photographer);
 
             } catch (NumberFormatException e) {
-                throw new RuntimeException(e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
         }
         else if (selectedPerson.equals("Ведущий")) {
             try {
-                EventHost eventHost = new EventHost(Integer.parseInt(rezyltTextId),rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
-                //weddingAgency.add(photographer);
-                dbWorker.addPerson(eventHost);
-
+                EventHost eventHost = new EventHost(Id,rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
+                repository.addPerson(eventHost);
+                data.add(eventHost);
             } catch (NumberFormatException e) {
-                throw new RuntimeException(e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
         }
         else if (selectedPerson.equals("Визажист")) {
             try {
-                Visagiste visagiste = new Visagiste(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
-                //weddingAgency.add(photographer);
-                dbWorker.addPerson(visagiste);
+                Visagiste visagiste = new Visagiste(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                repository.addPerson(visagiste);
+                data.add(visagiste);
 
             } catch (NumberFormatException e) {
-                throw new RuntimeException(e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
         }
             else if (selectedPerson.equals("Декоратор")) {
             try {
-                Decorator decorator = new Decorator(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
-                //weddingAgency.add(photographer);
-                dbWorker.addPerson(decorator);
+                Decorator decorator = new Decorator(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                repository.addPerson(decorator);
+                data.add(decorator);
 
             } catch (NumberFormatException e) {
-                throw new RuntimeException(e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
         }
         else {
             try {
-                Restaurant restaurant = new Restaurant(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
-                //weddingAgency.add(photographer);
-                dbWorker.addPerson(restaurant);
+                Restaurant restaurant = new Restaurant(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                repository.addPerson(restaurant);
+                data.add(restaurant);
 
             } catch (NumberFormatException e) {
-                throw new RuntimeException(e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                alert.showAndWait();
+                return;
             }
         }
         nameText.setText("");
         informationText.setText("");
         contactsText.setText("");
         priceText.setText("");
-        idText.setText("");
         stage.close();
     }
 }

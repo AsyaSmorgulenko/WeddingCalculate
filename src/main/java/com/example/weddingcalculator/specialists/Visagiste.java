@@ -6,7 +6,7 @@ public class Visagiste extends Person{
         super(id, name, price, contacts);
         this.location=location;
     }
-    public String getLocation() {
+    public String getSurname() {
         return location;
     }
 

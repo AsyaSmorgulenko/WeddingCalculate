@@ -1,13 +1,15 @@
 package com.example.weddingcalculator.specialists;
 
+import java.util.Random;
+
 public abstract class Person {
     protected String name;
     protected float price;
     protected String contacts;
     protected Integer id;
 
-    public Person(int id,String name,float price,String contacts){
-        this.id=id;
+    public Person(Integer id,String name,float price,String contacts){
+        this.id = id;
         this.name=name;
         this.price=price;
         this.contacts=contacts;

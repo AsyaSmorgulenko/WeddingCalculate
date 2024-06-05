@@ -6,11 +6,11 @@ public class Decorator extends Person{
         super(id, name, price, contacts);
         this.viewOfFlowers=viewOfFlowers;
     }
-    public String getViewOfFlowers() {
+    public String getSurname() {
         return viewOfFlowers;
     }
 
-    public void setViewOfFlowers(String viewOfFlowers) {
+    public void setSurname(String viewOfFlowers) {
         this.viewOfFlowers=viewOfFlowers;
     }
 }
