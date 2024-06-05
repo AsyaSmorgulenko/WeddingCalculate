@@ -8,4 +8,6 @@ module com.example.weddingcalculator {
     exports com.example.weddingcalculator;
     exports com.example.weddingcalculator.specialists;
     opens com.example.weddingcalculator.specialists to javafx.fxml;
+    exports com.example.weddingcalculator.dataBase;
+    opens com.example.weddingcalculator.dataBase to javafx.fxml;
 }

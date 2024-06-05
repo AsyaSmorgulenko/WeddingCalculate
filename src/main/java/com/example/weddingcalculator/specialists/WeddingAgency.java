@@ -1,5 +1,7 @@
 package com.example.weddingcalculator.specialists;
 
+import com.example.weddingcalculator.dataBase.Repository;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 

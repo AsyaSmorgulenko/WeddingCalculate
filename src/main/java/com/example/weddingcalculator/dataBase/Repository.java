@@ -1,4 +1,4 @@
-package com.example.weddingcalculator.specialists;
+package com.example.weddingcalculator.dataBase;
 
 import com.example.weddingcalculator.specialists.Person;
 

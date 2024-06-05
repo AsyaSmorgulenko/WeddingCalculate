@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="425.0" prefWidth="541.0" style="-fx-background-color: #f5ebea" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.specialists.EditWindow">
+<AnchorPane prefHeight="425.0" prefWidth="541.0" style="-fx-background-color: #f5ebea" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.EditWindow">
 
     <children>
         <Label layoutX="70.0" layoutY="158.0" prefHeight="18.0" prefWidth="103.0" text="Название" textFill="#729e7f">

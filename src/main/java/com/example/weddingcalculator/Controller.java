@@ -1,5 +1,6 @@
 package com.example.weddingcalculator;
 
+import com.example.weddingcalculator.dataBase.DBWorker;
 import com.example.weddingcalculator.specialists.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -38,25 +39,14 @@ public class Controller implements Initializable {
     DBWorker dbWorker=new DBWorker();
     //WeddingAgency weddingAgency;
     AddWindow addWindow = new AddWindow();
-    private final ObservableList<Person> data= FXCollections.observableArrayList();
-
+    EditWindow editWindow=new EditWindow();
+    ObservableList<Person> data= FXCollections.observableArrayList();
+    ArrayList<Person> list;
     @FXML
     void initialize(){
-
-        /* Platform.runLater(() -> {
-                AddWindow addWindow = new AddWindow();
-                try {
-                    addWindow.openAddWindow();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });*/
         if (addWindow.isShowing()) {
-            // Если открыто, просто переведите фокус на него
-            //addWindow.requestFocus();
             Platform.runLater(() -> addWindow.stage.requestFocus());
         } else {
-            // Если не открыто, откройте его
             try {
                 addWindow.openAddWindow();
             } catch (IOException e) {
@@ -69,6 +59,8 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             addInfAbout();
+            //data=FXCollections.observableArrayList(list);
+            //TableSpecialists.setItems(data);
             //weddingAgency.getAllPerson1();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -78,6 +70,7 @@ public class Controller implements Initializable {
         surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         contactsColumn.setCellValueFactory(new PropertyValueFactory<>("contacts"));
+        //data=FXCollections.observableArrayList(list);
         TableSpecialists.setItems(data);
 
     }
@@ -86,39 +79,45 @@ public class Controller implements Initializable {
         for (Person person : personList) {
             if (person instanceof Photographer) {
                 data.add((Photographer) person);
+               // data= FXCollections.observableArrayList(person);
             } else if (person instanceof EventHost) {
                 data.add((EventHost) person);
+                //data= FXCollections.observableArrayList(person);
             }
+            else if (person instanceof Visagiste) {
+                data.add((Visagiste) person);
+                //data= FXCollections.observableArrayList(person);
+            }
+
         }
     }
     @FXML
     void remonePerson(ActionEvent event) {
-        Person selectedPerson = TableSpecialists.getSelectionModel().getSelectedItem();
-
-        if (selectedPerson == null) {
+        Person person = TableSpecialists.getSelectionModel().getSelectedItem();
+        if (person == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a person to remove.", ButtonType.OK);
             alert.showAndWait();
             return;
         }
         try {
-            dbWorker.removePerson(selectedPerson);
+            dbWorker.removePerson(person);
+            data.remove(person);
         } catch (Exception e) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "An error occurred while removing the person: " + e.getMessage(), ButtonType.OK);
             errorAlert.showAndWait();
         }
-        //refreshTable();
-        //dbWorker.removePerson((Person) data);
     }
     @FXML
     void editPerson(ActionEvent event) {
-        Platform.runLater(() -> {
-            EditWindow editWindow = new EditWindow();
+        if (editWindow.isShowing()) {
+            Platform.runLater(() -> editWindow.stage.requestFocus());
+        } else {
             try {
                 editWindow.openEditWindow();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }
     }
 
 }

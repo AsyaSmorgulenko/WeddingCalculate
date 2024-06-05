@@ -1,8 +1,7 @@
 package com.example.weddingcalculator;
 
-import com.example.weddingcalculator.specialists.Photographer;
-import com.example.weddingcalculator.specialists.WeddingAgency;
-import com.example.weddingcalculator.specialists.DBWorker;
+import com.example.weddingcalculator.specialists.*;
+import com.example.weddingcalculator.dataBase.DBWorker;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +20,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AddWindow implements Initializable {
-    static Stage stage;
+    public static Stage stage;
     @FXML
     private Button addButton;
 
@@ -44,9 +43,8 @@ public class AddWindow implements Initializable {
     private TextField priceText;
     WeddingAgency weddingAgency;
     DBWorker dbWorker=new DBWorker();
-    ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий");
-
-
+    String selectedPerson;
+    ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан");
     public static void openAddWindow() throws IOException {
         stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(AddWindow.class.getResource("add-view.fxml"));
@@ -69,11 +67,12 @@ public class AddWindow implements Initializable {
 
     @FXML
     void Select(ActionEvent event) {
+        selectedPerson = comboBox.getValue();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //comboBox.setItems(list);
+        comboBox.setItems(list);
     }
     @FXML
     void addPerson(ActionEvent event) {
@@ -82,22 +81,61 @@ public class AddWindow implements Initializable {
         String rezyltTextContacts = contactsText.getText();
         String rezyltTextPrice = priceText.getText();
         String rezyltTextId = idText.getText();
-        try {
-            Photographer photographer = new Photographer(Integer.parseInt(rezyltTextId),rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
-            //weddingAgency.add(photographer);
-            dbWorker.addPerson(photographer);
+        if (selectedPerson.equals("Фотограф")) {
+            try {
+                Photographer photographer = new Photographer(Integer.parseInt(rezyltTextId),rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
+                //weddingAgency.add(photographer);
+                dbWorker.addPerson(photographer);
 
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if (selectedPerson.equals("Ведущий")) {
+            try {
+                EventHost eventHost = new EventHost(Integer.parseInt(rezyltTextId),rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
+                //weddingAgency.add(photographer);
+                dbWorker.addPerson(eventHost);
+
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else if (selectedPerson.equals("Визажист")) {
+            try {
+                Visagiste visagiste = new Visagiste(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                //weddingAgency.add(photographer);
+                dbWorker.addPerson(visagiste);
+
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+            else if (selectedPerson.equals("Декоратор")) {
+            try {
+                Decorator decorator = new Decorator(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                //weddingAgency.add(photographer);
+                dbWorker.addPerson(decorator);
+
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            try {
+                Restaurant restaurant = new Restaurant(Integer.parseInt(rezyltTextId), rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                //weddingAgency.add(photographer);
+                dbWorker.addPerson(restaurant);
+
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
+            }
         }
         nameText.setText("");
         informationText.setText("");
         contactsText.setText("");
         priceText.setText("");
         idText.setText("");
-    }
-
-    public void requestFocus() {
-        System.out.println("Окно открыто");
+        stage.close();
     }
 }
