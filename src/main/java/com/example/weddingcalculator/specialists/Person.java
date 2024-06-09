@@ -1,7 +1,5 @@
 package com.example.weddingcalculator.specialists;
 
-import java.util.Random;
-
 public abstract class Person {
     protected String name;
     protected float price;
@@ -35,7 +33,7 @@ public abstract class Person {
     public void setContacts(String contacts){
         this.contacts=contacts;
     }
-    public float getId(){
+    public int getId(){
         return id;
     }
     public void setId(int id){

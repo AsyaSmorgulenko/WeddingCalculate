@@ -1,6 +1,5 @@
 package com.example.weddingcalculator;
 
-import com.example.weddingcalculator.dataBase.Repository;
 import com.example.weddingcalculator.specialists.*;
 import com.example.weddingcalculator.dataBase.DBWorker;
 import javafx.collections.FXCollections;
@@ -16,12 +15,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Random;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import static com.example.weddingcalculator.Controller.*;
 
 public class AddWindow implements Initializable {
-    private Repository repository;
+    private Controller.Repository repository;
     public AddWindow() {
        this.repository = new DBWorker();
     }
@@ -54,7 +53,7 @@ public class AddWindow implements Initializable {
         fxmlLoader.setControllerFactory(clazz -> new AddWindow()); // Устанавливаем контроллер
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Добавление");
-        stage.getIcons().add(new Image("file:C:\\Users\\ADMIN\\IdeaProjects\\WeddingCalculator\\src\\main\\image\\heart.png"));
+        stage.getIcons().add(new Image("file:C:\\Users\\ADMIN\\IdeaProjects\\WeddingCalculator\\src\\main\\resources\\com\\example\\weddingcalculator\\images\\heart.png"));
         stage.setMinWidth(541);
         stage.setMinHeight(425);
         stage.setMaxWidth(541);
@@ -78,7 +77,7 @@ public class AddWindow implements Initializable {
         comboBox.setItems(list);
     }
     @FXML
-    void addPerson(ActionEvent event) {
+    void addPerson(ActionEvent event) throws SQLException {
         String rezyltTextName = nameText.getText();
         String rezyltTextInformation = informationText.getText();
         String rezyltTextContacts = contactsText.getText();

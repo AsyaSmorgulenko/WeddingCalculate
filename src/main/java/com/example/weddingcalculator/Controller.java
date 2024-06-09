@@ -1,7 +1,7 @@
 package com.example.weddingcalculator;
 
+import com.example.weddingcalculator.calculate.Calculator;
 import com.example.weddingcalculator.dataBase.DBWorker;
-import com.example.weddingcalculator.dataBase.Repository;
 import com.example.weddingcalculator.specialists.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -26,9 +26,19 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox<String> combox;
     @FXML
+    private ComboBox<String> comboBoxMaterial;
+    @FXML
+    private ComboBox<String> comboBoxEventHost;
+    @FXML
+    private ComboBox<String> comboBoxDecorator;
+    @FXML
+    private TextField enteringOfPeople;
+    @FXML
     public Button editButton;
     @FXML
     private Button addButton;
+    @FXML
+    private Button updateAll;
     @FXML
     public TableView<Person> TableSpecialists;
     @FXML
@@ -43,11 +53,112 @@ public class Controller implements Initializable {
     public TableColumn<Person,String> contactsColumn;
     @FXML
     private Button removeButton;
+    @FXML
+    private Button buttonRezylt;
+    @FXML
+    private CheckBox chooseBuffet;
+    @FXML
+    private TextArea getRezylt;
     AddWindow addWindow = new AddWindow();
+    Calculator calculator=new Calculator();
     EditWindow editWindow=new EditWindow();
     public static ObservableList<Person> data;
-    ArrayList<Person> personList= new ArrayList<>();
+    private ArrayList<Person> personList= new ArrayList<>();
+    @FXML
+    private ComboBox<String> comboBoxRestaurant;
+    @FXML
+    private ComboBox<String> comboBoxPhotographer;
+    @FXML
+    private CheckBox askaboutEvenHost;
+    @FXML
+    private CheckBox askaboutPhotographer;
+    @FXML
+    private CheckBox askaboutDecorator;
     ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан","Все");
+    ObservableList<String> materialList = FXCollections.observableArrayList("Серебро", "Желтое золото","Красное золото","Белое золото");
+    public static ObservableList<String> restaurantNames = FXCollections.observableArrayList();
+    public static ObservableList<String> photographerNames = FXCollections.observableArrayList();
+    public static ObservableList<String> eventHostNames = FXCollections.observableArrayList();
+    public static ObservableList<String> decoratorNames = FXCollections.observableArrayList();
+    @FXML
+    void chooseRestaurant(ActionEvent event) throws SQLException {
+        String restaurantName = comboBoxRestaurant.getSelectionModel().getSelectedItem();
+        float priceRestaurant=repository.getRestaurantPrice(restaurantName);
+        calculator.setPriceRestaurant(priceRestaurant);
+    }
+    @FXML
+    void chooseBuffet(ActionEvent event) {
+        boolean flag=true;
+        calculator.checkPriceBuffet(flag);
+    }
+    @FXML
+    void getRezylt(ActionEvent event) {
+        try {
+            Float result = calculator.checkWedding();
+            getRezylt.setText(String.valueOf(result));
+        }
+        catch (NullPointerException exception){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Ошибка рассчета");
+            alert.setHeaderText("Пожалуйста, введите количество гостей");
+            alert.setContentText("Нажмите enter для ввода");
+            ButtonType okButton = new ButtonType("OK");
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait();
+        }
+    }
+    @FXML
+    void SelectComboBoxMaterial(ActionEvent event) {
+        String material = comboBoxMaterial.getValue();
+        float price = calculator.addPriceMaterial(material);
+        System.out.println("Цена материала: " + price);
+    }
+    @FXML
+    void chooseDecorator(ActionEvent event) throws SQLException {
+        String decoratorName = comboBoxDecorator.getSelectionModel().getSelectedItem();
+        float priceDecorator=repository.getDecoratorPrice(decoratorName);
+        calculator.setPriceDecorator(priceDecorator);
+    }
+    @FXML
+    void choosePhotographer(ActionEvent event) throws SQLException {
+        String photographerName = comboBoxPhotographer.getSelectionModel().getSelectedItem();
+        float pricePhotographer=repository.getPhotographerPrice(photographerName);
+        calculator.setPricePhotographer(pricePhotographer);
+    }
+    @FXML
+    void chooseEventHost(ActionEvent event) throws SQLException {
+        String eventHostName = comboBoxEventHost.getSelectionModel().getSelectedItem();
+        float priceEventHost=repository.getEventHostPrice(eventHostName);
+        calculator.setPriceEventHost(priceEventHost);
+    }
+    @FXML
+    void enteringOfPeople(ActionEvent event) {
+        try {
+            int numberOfPeople = Integer.parseInt(enteringOfPeople.getText());
+            calculator.setNumberOfPeople(numberOfPeople);
+        }
+        catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Ошибка ввода");
+            alert.setHeaderText("Пожалуйста, введите целое числовое значение");
+            alert.setContentText("Вы ввели неверное значение.");
+            ButtonType okButton = new ButtonType("OK");
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait();
+        }
+    }
+    @FXML
+    void askaboutEventHost(ActionEvent event) {
+        comboBoxEventHost.setVisible(askaboutEvenHost.isSelected());
+    }
+    @FXML
+    void askaboutPhotographer(ActionEvent event) {
+        comboBoxPhotographer.setVisible(askaboutPhotographer.isSelected());
+    }
+    @FXML
+    void askaboutDecorator(ActionEvent event) {
+        comboBoxDecorator.setVisible(askaboutDecorator.isSelected());
+    }
     @FXML
     void initialize(){
         if (addWindow.isShowing()) {
@@ -154,22 +265,26 @@ public class Controller implements Initializable {
         try {
             data=FXCollections.observableArrayList(personList);
             addInfAbout();
-            //data=FXCollections.observableArrayList(list);
-            //TableSpecialists.setItems(data);
-            //weddingAgency.getAllPerson1();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        //idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         contactsColumn.setCellValueFactory(new PropertyValueFactory<>("contacts"));
         TableSpecialists.setItems(data);
-         combox.setItems(list);
-
+        combox.setItems(list);
+         calculator.getNameRestaurant();
+        comboBoxRestaurant.setItems(restaurantNames);
+        calculator.getNamePhotographer();
+        comboBoxPhotographer.setItems(photographerNames);
+         calculator.getNameDecorator();
+         comboBoxDecorator.setItems(decoratorNames);
+         calculator.getNameEventHost();
+         comboBoxEventHost.setItems(eventHostNames);
+         comboBoxMaterial.setItems(materialList);
     }
-    private void addInfAbout() throws SQLException {
+    public void addInfAbout() throws SQLException {
         personList = repository.getAllPerson();
         for (Person person : personList) {
             if (person instanceof Photographer) {
@@ -186,7 +301,6 @@ public class Controller implements Initializable {
             else{
                 data.add((Restaurant) person);
             }
-            //data= FXCollections.observableArrayList(person);
         }
     }
     @FXML
@@ -199,7 +313,6 @@ public class Controller implements Initializable {
         }
         try {
             repository.removePerson(person);
-            //personList.remove(person);
             data.remove(person);
             TableSpecialists.getSelectionModel().clearSelection();
         } catch (Exception e) {
@@ -218,5 +331,42 @@ public class Controller implements Initializable {
                 throw new RuntimeException(e);
             }
         }
+    }
+    @FXML
+    void updateAll(ActionEvent event) {
+        combox.setItems(list);
+        calculator.getNameRestaurant();
+        comboBoxRestaurant.setItems(restaurantNames);
+        calculator.getNamePhotographer();
+        comboBoxPhotographer.setItems(photographerNames);
+        calculator.getNameDecorator();
+        comboBoxDecorator.setItems(decoratorNames);
+        calculator.getNameEventHost();
+        comboBoxEventHost.setItems(eventHostNames);
+        comboBoxMaterial.setItems(materialList);
+    }
+
+    public static interface Repository {
+        ArrayList<Person> getAllPerson() throws SQLException;
+        void removePerson(Person person);
+
+        void addPerson(Person person);
+        void setPerson(Person person) throws SQLException;
+
+        ArrayList<Restaurant> getAllRestaurant() throws SQLException;
+
+        ArrayList<Photographer> getAllPhotographer() throws SQLException;
+
+        ArrayList<EventHost> getAllEventHost() throws SQLException;
+
+        ArrayList<Decorator> getAllDecorator() throws SQLException;
+
+        float getRestaurantPrice(String restaurantName) throws SQLException;
+
+        float getPhotographerPrice(String photographerName) throws SQLException;
+
+        float getEventHostPrice(String eventHostName) throws SQLException;
+
+        float getDecoratorPrice(String decoratorName) throws SQLException;
     }
 }

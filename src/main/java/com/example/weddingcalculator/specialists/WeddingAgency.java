@@ -1,14 +1,14 @@
 package com.example.weddingcalculator.specialists;
 
-import com.example.weddingcalculator.dataBase.Repository;
+import com.example.weddingcalculator.Controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class WeddingAgency {
     private ArrayList<Person> list=new ArrayList<>();
-    protected Repository repository;
-    public WeddingAgency(Repository repository) throws SQLException {
+    protected Controller.Repository repository;
+    public WeddingAgency(Controller.Repository repository) throws SQLException {
         this.repository=repository;
         ArrayList<Person> list1 = repository.getAllPerson();
         if (!(list1==null))
