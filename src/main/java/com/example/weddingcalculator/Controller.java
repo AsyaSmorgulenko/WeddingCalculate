@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -33,8 +34,6 @@ public class Controller implements Initializable {
     private ComboBox<String> comboBoxDecorator;
     @FXML
     private TextField enteringOfPeople;
-    @FXML
-    public Button editButton;
     @FXML
     private Button addButton;
     @FXML
@@ -61,7 +60,6 @@ public class Controller implements Initializable {
     private TextArea getRezylt;
     AddWindow addWindow = new AddWindow();
     Calculator calculator=new Calculator();
-    EditWindow editWindow=new EditWindow();
     public static ObservableList<Person> data;
     private ArrayList<Person> personList= new ArrayList<>();
     @FXML
@@ -85,11 +83,6 @@ public class Controller implements Initializable {
         String restaurantName = comboBoxRestaurant.getSelectionModel().getSelectedItem();
         float priceRestaurant=repository.getRestaurantPrice(restaurantName);
         calculator.setPriceRestaurant(priceRestaurant);
-    }
-    @FXML
-    void chooseBuffet(ActionEvent event) {
-        boolean flag=true;
-        calculator.checkPriceBuffet(flag);
     }
     @FXML
     void getRezylt(ActionEvent event) {
@@ -150,14 +143,33 @@ public class Controller implements Initializable {
     @FXML
     void askaboutEventHost(ActionEvent event) {
         comboBoxEventHost.setVisible(askaboutEvenHost.isSelected());
+        if (!askaboutEvenHost.isSelected()) {
+            comboBoxEventHost.getSelectionModel().clearSelection();
+        }
     }
     @FXML
     void askaboutPhotographer(ActionEvent event) {
         comboBoxPhotographer.setVisible(askaboutPhotographer.isSelected());
+        if (!askaboutPhotographer.isSelected()) {
+            comboBoxPhotographer.getSelectionModel().clearSelection();
+        }
     }
     @FXML
     void askaboutDecorator(ActionEvent event) {
         comboBoxDecorator.setVisible(askaboutDecorator.isSelected());
+        if (!askaboutDecorator.isSelected()) {
+            comboBoxDecorator.getSelectionModel().clearSelection();
+        }
+    }
+    @FXML
+    void chooseBuffet(ActionEvent event) {
+        boolean flag;
+        if (chooseBuffet.isSelected()) {
+            flag = true;
+        } else {
+            flag = false;
+        }
+        calculator.checkPriceBuffet(flag);
     }
     @FXML
     void initialize(){
@@ -320,18 +332,7 @@ public class Controller implements Initializable {
             errorAlert.showAndWait();
         }
     }
-    @FXML
-    void editPerson(ActionEvent event) {
-        if (editWindow.isShowing()) {
-            Platform.runLater(() -> editWindow.stage.requestFocus());
-        } else {
-            try {
-                editWindow.openEditWindow();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+
     @FXML
     void updateAll(ActionEvent event) {
         combox.setItems(list);
@@ -346,27 +347,4 @@ public class Controller implements Initializable {
         comboBoxMaterial.setItems(materialList);
     }
 
-    public static interface Repository {
-        ArrayList<Person> getAllPerson() throws SQLException;
-        void removePerson(Person person);
-
-        void addPerson(Person person);
-        void setPerson(Person person) throws SQLException;
-
-        ArrayList<Restaurant> getAllRestaurant() throws SQLException;
-
-        ArrayList<Photographer> getAllPhotographer() throws SQLException;
-
-        ArrayList<EventHost> getAllEventHost() throws SQLException;
-
-        ArrayList<Decorator> getAllDecorator() throws SQLException;
-
-        float getRestaurantPrice(String restaurantName) throws SQLException;
-
-        float getPhotographerPrice(String photographerName) throws SQLException;
-
-        float getEventHostPrice(String eventHostName) throws SQLException;
-
-        float getDecoratorPrice(String decoratorName) throws SQLException;
-    }
 }

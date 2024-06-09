@@ -1,6 +1,7 @@
 package com.example.weddingcalculator.calculate;
 
 import com.example.weddingcalculator.Controller;
+import com.example.weddingcalculator.Repository;
 import com.example.weddingcalculator.dataBase.DBWorker;
 import com.example.weddingcalculator.specialists.*;
 import javafx.collections.FXCollections;
@@ -10,7 +11,7 @@ import java.util.List;
 import static com.example.weddingcalculator.Controller.*;
 
 public class Calculator {
-    private Controller.Repository repository;
+    private Repository repository;
     private float priceRestaurant;
     private float priceBuffet=0;
     private float priceDecorator;
@@ -79,6 +80,9 @@ public class Calculator {
     public void checkPriceBuffet(boolean flag) {
         if (flag){
             priceBuffet=1100;
+        }
+        else {
+            priceBuffet=0;
         }
     }
     public float checkWedding(){

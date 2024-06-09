@@ -45,14 +45,6 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button fx:id="editButton" mnemonicParsing="false" onAction="#editPerson" prefHeight="18.0" prefWidth="20.0" style="-fx-background-color: #ffff; -fx-border-color: #e7b5b4;">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/edit.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
             <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="31.0" style="-fx-background-color: #ffff; -fx-border-color: #e7b5b4;">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">

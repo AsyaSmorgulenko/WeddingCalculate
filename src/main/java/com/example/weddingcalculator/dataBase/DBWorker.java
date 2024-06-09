@@ -1,12 +1,12 @@
 package com.example.weddingcalculator.dataBase;
 
-import com.example.weddingcalculator.Controller;
+import com.example.weddingcalculator.Repository;
 import com.example.weddingcalculator.specialists.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DBWorker implements Controller.Repository {
+public class DBWorker implements Repository {
     private static String jdbUrl = "jdbc:sqlite:C:\\SQLLite\\sqlite-tools-win-x64-3450200\\weddingagency.db";
     private static Connection connection;;
     ResultSet resultSet = null;
@@ -31,6 +31,7 @@ public class DBWorker implements Controller.Repository {
         }
         return connection;
     }
+
     public static void createTable(){
         try {
             Statement statement=connection.createStatement();
@@ -208,33 +209,52 @@ public class DBWorker implements Controller.Repository {
     }
 
     @Override
+    public void editPeople(Person person,String type) throws SQLException {
+        String query = "UPDATE specialist SET ";
+        switch (type) {
+            case "Photographer":
+                query += "price = ?, contacts = ? WHERE id = ?";
+                break;
+            case "EventHost":
+                query += "price = ?, contacts = ? WHERE id = ?";
+                break;
+            case "Visagiste":
+                query += "price = ?, contacts = ? WHERE id = ?";
+                break;
+            case "Restaurant":
+                query += "price = ?, contacts = ? WHERE id = ?";
+                break;
+            case "Decorator":
+                query += "price = ?, contacts = ? WHERE id = ?";
+                break;
+        }
+        connection = DriverManager.getConnection(jdbUrl);
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setFloat(1, person.getPrice());
+        statement.setString(2, person.getContacts());
+        statement.setInt(3, person.getId());
+        statement.executeUpdate();
+        connection.close();
+        statement.close();
+    }
+
+    @Override
     public void setPerson(Person person) throws SQLException {
     }
     @Override
-    public ArrayList<Restaurant> getAllRestaurant() throws SQLException {
+    public ArrayList<String> getAllRestaurantName(String rezyltTextName) throws SQLException {
         connection = DriverManager.getConnection(jdbUrl);
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Restaurant';");
         int col = result.getInt(1);
         result.close();
-        ArrayList<Restaurant> list = new ArrayList<>();
-        String query = "SELECT specialists.type, specialists.id, \n" +
-                "restaurant.id as idR,restaurant.name as nameR,restaurant.surname as surnameR,restaurant.price as priceR,restaurant.contacts as contactsR\n"+
-                "FROM specialists\n" +
-                "LEFT JOIN restaurant ON restaurant.id = specialists.id";
+        ArrayList<String> list = new ArrayList<>();
+        String query = "SELECT name FROM restaurant";
         ResultSet resultSet = statement.executeQuery(query);
         int i = 0;
         while (i < col) {
             resultSet.next();
-            switch (resultSet.getString("type")) {
-                case "Restaurant":
-                    list.add(new Restaurant(resultSet.getInt("idR"),
-                            resultSet.getString("nameR"),
-                            resultSet.getString("surnameR"),
-                            resultSet.getFloat("priceR"),
-                            resultSet.getString("contactsR")));
-                    break;
-            }
+            list.add(resultSet.getString("name"));
             i++;
         }
         connection.close();
@@ -243,30 +263,41 @@ public class DBWorker implements Controller.Repository {
         return list;
     }
     @Override
-    public ArrayList<Photographer> getAllPhotographer() throws SQLException {
+    public ArrayList<String> getAllPhotographerName(String rezyltTextName) throws SQLException {
         connection = DriverManager.getConnection(jdbUrl);
         Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Restaurant';");
+        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Photographer';");
         int col = result.getInt(1);
         result.close();
-        ArrayList<Photographer> list = new ArrayList<>();
-        String query = "SELECT specialists.type, specialists.id, \n" +
-                "photographer.id,photographer.name,photographer.surname,photographer.price,photographer.contacts\n" +
-                "FROM specialists\n" +
-                "LEFT JOIN photographer ON photographer.id = specialists.id";
+        ArrayList<String> list = new ArrayList<>();
+        String query = "SELECT name FROM photographer";
         ResultSet resultSet = statement.executeQuery(query);
         int i = 0;
         while (i < col) {
             resultSet.next();
-            switch (resultSet.getString("type")) {
-                case "Photographer":
-                    list.add(new Photographer(resultSet.getInt("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("surname"),
-                            resultSet.getFloat("price"),
-                            resultSet.getString("contacts")));
-                    break;
-            }
+            list.add(resultSet.getString("name"));
+            i++;
+        }
+        connection.close();
+        statement.close();
+        resultSet.close();
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> getAllEventHostName(String rezyltTextName) throws SQLException {
+        connection = DriverManager.getConnection(jdbUrl);
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'EventHost';");
+        int col = result.getInt(1);
+        result.close();
+        ArrayList<String> list = new ArrayList<>();
+        String query = "SELECT name FROM eventHost";
+        ResultSet resultSet = statement.executeQuery(query);
+        int i = 0;
+        while (i < col) {
+            resultSet.next();
+            list.add(resultSet.getString("name"));
             i++;
         }
         connection.close();
@@ -275,62 +306,19 @@ public class DBWorker implements Controller.Repository {
         return list;
     }
     @Override
-    public ArrayList<EventHost> getAllEventHost() throws SQLException {
+    public ArrayList<String> getAllDecoratorName(String rezyltTextName) throws SQLException {
         connection = DriverManager.getConnection(jdbUrl);
         Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Restaurant';");
+        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Decorator';");
         int col = result.getInt(1);
         result.close();
-        ArrayList<EventHost> list = new ArrayList<>();
-        String query = "SELECT specialists.type, specialists.id, \n" +
-                "eventHost.id as idH,eventHost.name as nameH,eventHost.surname as surnameh,eventHost.price as priceH,eventHost.contacts as contactsh\n" +
-                "FROM specialists\n" +
-                "LEFT JOIN eventHost ON eventHost.id = specialists.id";
+        ArrayList<String> list = new ArrayList<>();
+        String query = "SELECT name FROM decorator";
         ResultSet resultSet = statement.executeQuery(query);
         int i = 0;
         while (i < col) {
             resultSet.next();
-            switch (resultSet.getString("type")) {
-                case "EventHost":
-                    list.add(new EventHost(resultSet.getInt("idh"),
-                            resultSet.getString("nameh"),
-                            resultSet.getString("surnameh"),
-                            resultSet.getFloat("priceh"),
-                            resultSet.getString("contactsh")));
-                    break;
-            }
-            i++;
-        }
-        connection.close();
-        statement.close();
-        resultSet.close();
-        return list;
-    }
-    @Override
-    public ArrayList<Decorator> getAllDecorator() throws SQLException {
-        connection = DriverManager.getConnection(jdbUrl);
-        Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery("select count(id) from specialists where type = 'Restaurant';");
-        int col = result.getInt(1);
-        result.close();
-        ArrayList<Decorator> list = new ArrayList<>();
-        String query = "SELECT specialists.type, specialists.id, \n" +
-                "decorator.id as idD,decorator.name as nameD,decorator.surname as surnameD,decorator.price as priceD,decorator.contacts as contactsD\n"+
-                "FROM specialists\n" +
-                "LEFT JOIN decorator ON decorator.id = specialists.id";
-        ResultSet resultSet = statement.executeQuery(query);
-        int i = 0;
-        while (i < col) {
-            resultSet.next();
-            switch (resultSet.getString("type")) {
-                case "Decorator":
-                    list.add(new Decorator(resultSet.getInt("idD"),
-                            resultSet.getString("nameD"),
-                            resultSet.getString("surnameD"),
-                            resultSet.getFloat("priceD"),
-                            resultSet.getString("contactsD")));
-                    break;
-            }
+            list.add(resultSet.getString("name"));
             i++;
         }
         connection.close();

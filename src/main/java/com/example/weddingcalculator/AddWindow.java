@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 import static com.example.weddingcalculator.Controller.*;
 
 public class AddWindow implements Initializable {
-    private Controller.Repository repository;
+    private Repository repository;
     public AddWindow() {
        this.repository = new DBWorker();
     }
@@ -42,7 +42,7 @@ public class AddWindow implements Initializable {
 
     @FXML
     private TextField priceText;
-    WeddingAgency weddingAgency;
+
     DBWorker dbWorker=new DBWorker();
     String selectedPerson;
 
@@ -89,26 +89,38 @@ public class AddWindow implements Initializable {
             return;
         }
         else if (selectedPerson.equals("Фотограф")) {
-            try {
-                Photographer photographer = new Photographer(Id,rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
-                repository.addPerson(photographer);
-                data.add(photographer);
-
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+            if (repository.getAllPhotographerName(rezyltTextName).contains(rezyltTextName)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Такой фотограф уже существует", ButtonType.OK);
                 alert.showAndWait();
                 return;
+            } else {
+                try {
+                    Photographer photographer = new Photographer(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                    repository.addPerson(photographer);
+                    data.add(photographer);
+
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                    alert.showAndWait();
+                    return;
+                }
             }
         }
         else if (selectedPerson.equals("Ведущий")) {
-            try {
-                EventHost eventHost = new EventHost(Id,rezyltTextName,rezyltTextInformation,Integer.parseInt(rezyltTextPrice),rezyltTextContacts);
-                repository.addPerson(eventHost);
-                data.add(eventHost);
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+            if (repository.getAllEventHostName(rezyltTextName).contains(rezyltTextName)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Такой ведущий уже существует", ButtonType.OK);
                 alert.showAndWait();
                 return;
+            } else {
+                try {
+                    EventHost eventHost = new EventHost(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                    repository.addPerson(eventHost);
+                    data.add(eventHost);
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                    alert.showAndWait();
+                    return;
+                }
             }
         }
         else if (selectedPerson.equals("Визажист")) {
@@ -124,27 +136,39 @@ public class AddWindow implements Initializable {
             }
         }
             else if (selectedPerson.equals("Декоратор")) {
-            try {
-                Decorator decorator = new Decorator(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
-                repository.addPerson(decorator);
-                data.add(decorator);
-
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+            if (repository.getAllDecoratorName(rezyltTextName).contains(rezyltTextName)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Такой декоратор уже существует", ButtonType.OK);
                 alert.showAndWait();
                 return;
+            } else {
+                try {
+                    Decorator decorator = new Decorator(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                    repository.addPerson(decorator);
+                    data.add(decorator);
+
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                    alert.showAndWait();
+                    return;
+                }
             }
         }
         else {
-            try {
-                Restaurant restaurant = new Restaurant(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
-                repository.addPerson(restaurant);
-                data.add(restaurant);
-
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+            if (repository.getAllRestaurantName(rezyltTextName).contains(rezyltTextName)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Такой ресторан уже существует", ButtonType.OK);
                 alert.showAndWait();
                 return;
+            } else {
+                try {
+                    Restaurant restaurant = new Restaurant(Id, rezyltTextName, rezyltTextInformation, Integer.parseInt(rezyltTextPrice), rezyltTextContacts);
+                    repository.addPerson(restaurant);
+                    data.add(restaurant);
+
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Введите корректную цену", ButtonType.OK);
+                    alert.showAndWait();
+                    return;
+                }
             }
         }
         nameText.setText("");
