@@ -1,4 +1,4 @@
-package com.example.weddingcalculator;
+package com.example.weddingcalculator.view;
 
 import com.example.weddingcalculator.calculate.Calculator;
 import com.example.weddingcalculator.dataBase.DBWorker;
@@ -11,12 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -74,15 +75,69 @@ public class Controller implements Initializable {
     private CheckBox askaboutPhotographer;
     @FXML
     private CheckBox askaboutDecorator;
-    ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан","Все");
-    ObservableList<String> materialList = FXCollections.observableArrayList("Серебро", "Желтое золото","Красное золото","Белое золото");
+    private ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан","Все");
+    private ObservableList<String> materialList = FXCollections.observableArrayList("Серебро", "Желтое золото","Красное золото","Белое золото");
     public static ObservableList<String> restaurantNames = FXCollections.observableArrayList();
     public static ObservableList<String> photographerNames = FXCollections.observableArrayList();
     public static ObservableList<String> eventHostNames = FXCollections.observableArrayList();
     public static ObservableList<String> decoratorNames = FXCollections.observableArrayList();
     @FXML
-    void dowland(ActionEvent event) {
+    void dowland(ActionEvent event) throws IOException {
+        ObservableList<Person> persons =TableSpecialists.getItems();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Сохранить таблицу");
+        fileChooser.setInitialFileName("wedding.csv");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV-файлы", "*.csv")
+        );
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            java.io.FileWriter fileWriter = new java.io.FileWriter(file);
+            fileWriter.write(nameColumn.getText() + "," +
+                    surnameColumn.getText() + "," +
+                    priceColumn.getText() + "," +
+                    contactsColumn.getText() + "," +
+                    "Тип специалиста" +"\n");
+            for (Person person : persons) {
+                if (person instanceof Photographer) {
+                    fileWriter.write(person.getName() + "," +
+                            ((Photographer) person).getSurname() + "," +
+                            person.getPrice() + "," +
+                            person.getContacts() + "," +
+                            "Фотограф"+"\n");
+                }
+                else if (person instanceof Restaurant) {
+                    fileWriter.write(person.getName() + "," +
+                            ((Restaurant) person).getSurname() + "," +
+                            person.getPrice() + "," +
+                            person.getContacts() + "," +
+                            "Ресторан"+"\n");
+                }
+                else if (person instanceof EventHost) {
+                    fileWriter.write(person.getName() + "," +
+                            ((EventHost) person).getSurname() + "," +
+                            person.getPrice() + "," +
+                            person.getContacts() + "," +
+                            "Ведущий"+"\n");
+                }
+                else if (person instanceof Decorator) {
+                    fileWriter.write(person.getName() + "," +
+                            ((Decorator) person).getSurname() + "," +
+                            person.getPrice() + "," +
+                            person.getContacts() + "," +
+                            "Декоратор"+"\n");
+                }
+                else {
+                    fileWriter.write(person.getName() + "," +
+                            ((Visagiste) person).getSurname() + "," +
+                            person.getPrice() + "," +
+                            person.getContacts() + "," +
+                            "Визажист"+"\n");
+                }
+            }
 
+            fileWriter.close();
+        }
     }
     @FXML
     void chooseRestaurant(ActionEvent event) throws SQLException {

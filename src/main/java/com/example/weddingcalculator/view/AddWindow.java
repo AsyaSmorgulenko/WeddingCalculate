@@ -1,4 +1,4 @@
-package com.example.weddingcalculator;
+package com.example.weddingcalculator.view;
 
 import com.example.weddingcalculator.specialists.*;
 import com.example.weddingcalculator.dataBase.DBWorker;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import static com.example.weddingcalculator.Controller.*;
+import static com.example.weddingcalculator.view.Controller.*;
 
 public class AddWindow implements Initializable {
     private Repository repository;
@@ -49,8 +49,8 @@ public class AddWindow implements Initializable {
     ObservableList<String> list = FXCollections.observableArrayList("Фотограф", "Ведущий","Визажист","Декоратор","Ресторан");
     public static void openAddWindow() throws IOException {
         stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(AddWindow.class.getResource("add-view.fxml"));
-        fxmlLoader.setControllerFactory(clazz -> new AddWindow()); // Устанавливаем контроллер
+        FXMLLoader fxmlLoader = new FXMLLoader(AddWindow.class.getResource("/com/example/weddingcalculator/add-view.fxml"));
+        fxmlLoader.setControllerFactory(clazz -> new AddWindow());
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Добавление");
         stage.getIcons().add(new Image("file:C:\\Users\\ADMIN\\IdeaProjects\\WeddingCalculator\\src\\main\\resources\\com\\example\\weddingcalculator\\images\\heart.png"));

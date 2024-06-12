@@ -1,6 +1,6 @@
 package com.example.weddingcalculator.dataBase;
 
-import com.example.weddingcalculator.Repository;
+import com.example.weddingcalculator.view.Repository;
 import com.example.weddingcalculator.specialists.*;
 
 import java.sql.*;

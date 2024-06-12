@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="425.0" prefWidth="541.0" style="-fx-background-color: #f5ebea" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.AddWindow">
+<AnchorPane prefHeight="425.0" prefWidth="541.0" style="-fx-background-color: #f5ebea" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.view.AddWindow">
 
          <children>
             <ComboBox fx:id="comboBox" layoutX="65.0" layoutY="97.0" onAction="#Select" prefWidth="150.0" style="-fx-background-color: #e7b5b4;" />

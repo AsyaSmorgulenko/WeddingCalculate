@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox accessibleRole="MENU_BAR" alignment="TOP_CENTER" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" style="-fx-background-color: #f5ebea;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.Controller">
+<VBox accessibleRole="MENU_BAR" alignment="TOP_CENTER" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" style="-fx-background-color: #f5ebea;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.weddingcalculator.view.Controller">
     <children>
         <ToolBar prefHeight="40.0" prefWidth="900.0" style="-fx-background-color: #ffff; -fx-border-color: #e7b5b4;">
             <items>

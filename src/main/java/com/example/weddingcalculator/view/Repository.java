@@ -1,4 +1,4 @@
-package com.example.weddingcalculator;
+package com.example.weddingcalculator.view;
 
 import com.example.weddingcalculator.specialists.Decorator;
 import com.example.weddingcalculator.specialists.EventHost;

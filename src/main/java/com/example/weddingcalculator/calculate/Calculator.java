@@ -1,14 +1,13 @@
 package com.example.weddingcalculator.calculate;
 
-import com.example.weddingcalculator.Controller;
-import com.example.weddingcalculator.Repository;
+import com.example.weddingcalculator.view.Repository;
 import com.example.weddingcalculator.dataBase.DBWorker;
 import com.example.weddingcalculator.specialists.*;
 import javafx.collections.FXCollections;
 
 import java.sql.SQLException;
 import java.util.List;
-import static com.example.weddingcalculator.Controller.*;
+import static com.example.weddingcalculator.view.Controller.*;
 
 public class Calculator {
     private Repository repository;
