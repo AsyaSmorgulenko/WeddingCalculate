@@ -45,7 +45,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="31.0" style="-fx-background-color: #ffff; -fx-border-color: #e7b5b4;">
+            <Button fx:id="dowland" mnemonicParsing="false" onAction="#dowland" prefHeight="26.0" prefWidth="31.0" style="-fx-background-color: #ffff; -fx-border-color: #e7b5b4;">
                <graphic>
                   <ImageView fitHeight="18.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -39,6 +39,8 @@ public class Controller implements Initializable {
     @FXML
     private Button updateAll;
     @FXML
+    private Button dowland;
+    @FXML
     public TableView<Person> TableSpecialists;
     @FXML
     public TableColumn<Person,Integer> idColumn;
@@ -78,6 +80,10 @@ public class Controller implements Initializable {
     public static ObservableList<String> photographerNames = FXCollections.observableArrayList();
     public static ObservableList<String> eventHostNames = FXCollections.observableArrayList();
     public static ObservableList<String> decoratorNames = FXCollections.observableArrayList();
+    @FXML
+    void dowland(ActionEvent event) {
+
+    }
     @FXML
     void chooseRestaurant(ActionEvent event) throws SQLException {
         String restaurantName = comboBoxRestaurant.getSelectionModel().getSelectedItem();
@@ -319,7 +325,7 @@ public class Controller implements Initializable {
     void remonePerson(ActionEvent event) {
         Person person = TableSpecialists.getSelectionModel().getSelectedItem();
         if (person == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a person to remove.", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Пожалуйста,выделите персона.", ButtonType.OK);
             alert.showAndWait();
             return;
         }
@@ -328,7 +334,7 @@ public class Controller implements Initializable {
             data.remove(person);
             TableSpecialists.getSelectionModel().clearSelection();
         } catch (Exception e) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "An error occurred while removing the person: " + e.getMessage(), ButtonType.OK);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Ошибка удаления" + e.getMessage(), ButtonType.OK);
             errorAlert.showAndWait();
         }
     }
